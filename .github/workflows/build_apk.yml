@@ -8,10 +8,20 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.19.0'
-      - run: flutter pub get
-      - run: flutter build apk --release
+
+      - run: flutter create temp_app
+      - run: rm -rf temp_app/lib
+      - run: cp -r lib temp_app/
+      - run: cp pubspec.yaml temp_app/
+      - run: cp README.md temp_app/
+
+      - working-directory: temp_app
+        run: flutter pub get
+      - working-directory: temp_app
+        run: flutter build apk --release
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: checkin-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: temp_app/build/app/outputs/flutter-apk/app-release.apk
